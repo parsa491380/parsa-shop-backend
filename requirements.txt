@@ -1,0 +1,16 @@
+# requirements.txt
+# Core Framework
+Django>=5.0.0
+djangorestframework>=3.14.0
+
+# Authentication
+djangorestframework-simplejwt>=5.3.0
+
+# Cross-Origin Resource Sharing (Allows Next.js to communicate with Django)
+django-cors-headers>=4.3.0
+
+# Environment Variable Management
+python-dotenv>=1.0.0
+
+# Image Processing (Required for product images in Django)
+Pillow>=10.2.0
