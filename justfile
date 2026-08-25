@@ -3,7 +3,7 @@
 dev: 
   python manage.py runserver
 
-# activate the virtual environment (venve) :
+# activate the virtual environment ( venv ) :
 venv: 
   venv\Scripts\activate
 
@@ -18,3 +18,11 @@ createUser:
 #
 migrate: 
   python manage.py migrate
+
+# format the project
+format:
+  ruff format .
+
+# lint the project
+lint: 
+  ruff check . --fix

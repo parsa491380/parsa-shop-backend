@@ -1,0 +1,13 @@
+[tool.ruff]
+line-length = 88
+target-version = "py314"
+exclude = [
+    "justfile"
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "tab"
