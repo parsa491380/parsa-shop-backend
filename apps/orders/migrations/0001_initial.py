@@ -4,30 +4,68 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+	initial = True
 
-    initial = True
+	dependencies = []
 
-    dependencies = [
-    ]
-
-    operations = [
-        migrations.CreateModel(
-            name='Order',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[('Pending', 'Pending'), ('Paid', 'Paid'), ('Shipped', 'Shipped'), ('Delivered', 'Delivered'), ('Cancelled', 'Cancelled')], default='Pending', max_length=20)),
-                ('total_amount', models.DecimalField(decimal_places=2, default=0.0, max_digits=10)),
-                ('shipping_address', models.TextField(help_text='The address where this specific order will be delivered.')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='OrderItem',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.PositiveIntegerField(default=1)),
-                ('price_at_purchase', models.DecimalField(decimal_places=2, max_digits=10)),
-            ],
-        ),
-    ]
+	operations = [
+		migrations.CreateModel(
+			name='Order',
+			fields=[
+				(
+					'id',
+					models.BigAutoField(
+						auto_created=True,
+						primary_key=True,
+						serialize=False,
+						verbose_name='ID',
+					),
+				),
+				(
+					'status',
+					models.CharField(
+						choices=[
+							('Pending', 'Pending'),
+							('Paid', 'Paid'),
+							('Shipped', 'Shipped'),
+							('Delivered', 'Delivered'),
+							('Cancelled', 'Cancelled'),
+						],
+						default='Pending',
+						max_length=20,
+					),
+				),
+				(
+					'total_amount',
+					models.DecimalField(decimal_places=2, default=0.0, max_digits=10),
+				),
+				(
+					'shipping_address',
+					models.TextField(
+						help_text='The address where this specific order will be delivered.'
+					),
+				),
+				('created_at', models.DateTimeField(auto_now_add=True)),
+				('updated_at', models.DateTimeField(auto_now=True)),
+			],
+		),
+		migrations.CreateModel(
+			name='OrderItem',
+			fields=[
+				(
+					'id',
+					models.BigAutoField(
+						auto_created=True,
+						primary_key=True,
+						serialize=False,
+						verbose_name='ID',
+					),
+				),
+				('quantity', models.PositiveIntegerField(default=1)),
+				(
+					'price_at_purchase',
+					models.DecimalField(decimal_places=2, max_digits=10),
+				),
+			],
+		),
+	]

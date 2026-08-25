@@ -5,44 +5,126 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+	initial = True
 
-    initial = True
+	dependencies = []
 
-    dependencies = [
-    ]
-
-    operations = [
-        migrations.CreateModel(
-            name='Category',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('slug', models.SlugField(blank=True, help_text="URL friendly name (e.g., 'summer-shirts'). Auto-generated if left blank.", max_length=255, unique=True)),
-                ('description', models.TextField(blank=True)),
-                ('meta_title', models.CharField(blank=True, help_text='Ideal length: 50-60 characters for search engines.', max_length=60)),
-                ('meta_description', models.CharField(blank=True, help_text='Ideal length: 150-160 characters for search engines.', max_length=160)),
-            ],
-            options={
-                'verbose_name_plural': 'Categories',
-            },
-        ),
-        migrations.CreateModel(
-            name='Product',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('slug', models.SlugField(blank=True, help_text='Auto-generated URL string.', max_length=255, unique=True)),
-                ('description', models.TextField()),
-                ('price', models.DecimalField(decimal_places=2, help_text='Product price in your local currency.', max_digits=10)),
-                ('stock_quantity', models.PositiveIntegerField(default=0, help_text='Current number of items available for sale.')),
-                ('image', models.ImageField(blank=True, null=True, upload_to='product_images/')),
-                ('image_alt_text', models.CharField(blank=True, help_text='Crucial for screen readers and image SEO.', max_length=255)),
-                ('meta_title', models.CharField(blank=True, max_length=60)),
-                ('meta_description', models.CharField(blank=True, max_length=160)),
-                ('is_active', models.BooleanField(default=True, help_text='Uncheck to hide this product from the storefront.')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='products.category')),
-            ],
-        ),
-    ]
+	operations = [
+		migrations.CreateModel(
+			name='Category',
+			fields=[
+				(
+					'id',
+					models.BigAutoField(
+						auto_created=True,
+						primary_key=True,
+						serialize=False,
+						verbose_name='ID',
+					),
+				),
+				('name', models.CharField(max_length=255)),
+				(
+					'slug',
+					models.SlugField(
+						blank=True,
+						help_text="URL friendly name (e.g., 'summer-shirts'). Auto-generated if left blank.",
+						max_length=255,
+						unique=True,
+					),
+				),
+				('description', models.TextField(blank=True)),
+				(
+					'meta_title',
+					models.CharField(
+						blank=True,
+						help_text='Ideal length: 50-60 characters for search engines.',
+						max_length=60,
+					),
+				),
+				(
+					'meta_description',
+					models.CharField(
+						blank=True,
+						help_text='Ideal length: 150-160 characters for search engines.',
+						max_length=160,
+					),
+				),
+			],
+			options={
+				'verbose_name_plural': 'Categories',
+			},
+		),
+		migrations.CreateModel(
+			name='Product',
+			fields=[
+				(
+					'id',
+					models.BigAutoField(
+						auto_created=True,
+						primary_key=True,
+						serialize=False,
+						verbose_name='ID',
+					),
+				),
+				('name', models.CharField(max_length=255)),
+				(
+					'slug',
+					models.SlugField(
+						blank=True,
+						help_text='Auto-generated URL string.',
+						max_length=255,
+						unique=True,
+					),
+				),
+				('description', models.TextField()),
+				(
+					'price',
+					models.DecimalField(
+						decimal_places=2,
+						help_text='Product price in your local currency.',
+						max_digits=10,
+					),
+				),
+				(
+					'stock_quantity',
+					models.PositiveIntegerField(
+						default=0,
+						help_text='Current number of items available for sale.',
+					),
+				),
+				(
+					'image',
+					models.ImageField(
+						blank=True, null=True, upload_to='product_images/'
+					),
+				),
+				(
+					'image_alt_text',
+					models.CharField(
+						blank=True,
+						help_text='Crucial for screen readers and image SEO.',
+						max_length=255,
+					),
+				),
+				('meta_title', models.CharField(blank=True, max_length=60)),
+				('meta_description', models.CharField(blank=True, max_length=160)),
+				(
+					'is_active',
+					models.BooleanField(
+						default=True,
+						help_text='Uncheck to hide this product from the storefront.',
+					),
+				),
+				('created_at', models.DateTimeField(auto_now_add=True)),
+				('updated_at', models.DateTimeField(auto_now=True)),
+				(
+					'category',
+					models.ForeignKey(
+						on_delete=django.db.models.deletion.CASCADE,
+						related_name='products',
+						to='products.category',
+					),
+				),
+			],
+		),
+	]

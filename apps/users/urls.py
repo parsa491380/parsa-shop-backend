@@ -30,5 +30,5 @@
 from django.urls import path
 
 urlpatterns = [
-    # We will add user-specific routes (like registering) here later
+	# We will add user-specific routes (like registering) here later
 ]
