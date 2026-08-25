@@ -4,8 +4,8 @@ Description: Translates CustomUser database models into JSON data for the fronte
 Related Files: apps/users/models.py, apps/users/views.py
 """
 
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework import serializers
 
 # Fetch our CustomUser model
 User = get_user_model()

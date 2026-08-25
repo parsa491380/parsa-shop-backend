@@ -4,7 +4,7 @@ Description: Maps the product API endpoints.
 """
 
 from django.urls import path
-from .views import ProductListAPIView, ProductDetailAPIView
+from .views import ProductDetailAPIView, ProductListAPIView
 
 urlpatterns = [
 	path('', ProductListAPIView.as_view(), name='api-product-list'),

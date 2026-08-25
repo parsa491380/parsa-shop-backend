@@ -5,8 +5,8 @@ Related Files: apps/orders/models.py, apps/orders/views.py
 """
 
 from rest_framework import serializers
-from .models import Order, OrderItem
 from apps.products.models import Product
+from .models import Order, OrderItem
 
 
 class CartItemInputSerializer(serializers.Serializer):

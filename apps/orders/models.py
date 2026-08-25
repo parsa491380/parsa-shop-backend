@@ -4,8 +4,8 @@ Description: Defines the database schema for customer Orders and individual Orde
 Related Files: apps/orders/serializers.py, apps/orders/views.py.
 """
 
-from django.db import models
 from django.conf import settings
+from django.db import models
 from apps.products.models import Product
 
 

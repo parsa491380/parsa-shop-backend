@@ -17,3 +17,6 @@ __pycache__/
 .env
 .vscode/
 .idea/
+
+# ruff
+.ruff_cache

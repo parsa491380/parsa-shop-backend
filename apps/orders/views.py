@@ -5,8 +5,8 @@ Related Files: apps/orders/serializers.py, apps/orders/urls.py
 """
 
 from rest_framework import generics, status
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from .serializers import CheckoutSerializer
 
 

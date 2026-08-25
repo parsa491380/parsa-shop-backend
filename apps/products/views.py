@@ -6,8 +6,8 @@ Related Files: apps/products/serializers.py, apps/products/urls.py
 
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
-from .models import Category, Product
-from .serializers import CategorySerializer, ProductSerializer
+from .models import Product
+from .serializers import ProductSerializer
 
 
 class ProductListAPIView(generics.ListAPIView):

@@ -6,10 +6,10 @@ Description: Contains the logic for the User API endpoints (Registering and view
 Related Files: apps/users/serializers.py, apps/users/urls.py
 """
 
+from django.contrib.auth import get_user_model
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.contrib.auth import get_user_model
-from .serializers import UserRegistrationSerializer, UserProfileSerializer
+from .serializers import UserProfileSerializer, UserRegistrationSerializer
 
 User = get_user_model()
 
