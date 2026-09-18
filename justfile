@@ -5,7 +5,7 @@ dev:
 
 # activate the virtual environment ( venv ) :
 venv: 
-  venv\Scripts\activate
+  venv/Scripts/activate
 
 # apply changes from the models in the database :
 makeMigrations: 
