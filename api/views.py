@@ -13,32 +13,30 @@ The API deliberately exposes a small storefront contract instead of
 serializing Oscar's internal models wholesale.
 """
 
-from decimal import Decimal
 import logging
+from decimal import Decimal
 
-from django.contrib.auth import authenticate, get_user_model, login, logout
-from django.core.exceptions import ValidationError
 from django.conf import settings
+from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.db.models import Q
 from django.middleware.csrf import get_token
-from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
-
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from oscar.apps.address.models import Country, UserAddress
+from oscar.apps.checkout.calculators import OrderTotalCalculator
+from oscar.apps.order.models import Order, ShippingAddress
+from oscar.apps.order.utils import OrderCreator
+from oscar.apps.partner.strategy import Selector
+from oscar.apps.shipping.methods import Free
+from oscar.core.loading import get_model
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib.auth.password_validation import validate_password
-from oscar.apps.address.models import Country, UserAddress
-from oscar.apps.checkout.calculators import OrderTotalCalculator
-from oscar.apps.order.models import Order, ShippingAddress
-from oscar.apps.order.utils import OrderCreator
-from oscar.apps.shipping.methods import Free
-from django.db.models import Q
-from oscar.core.loading import get_model
-from oscar.apps.partner.strategy import Selector
-
 
 Product = get_model("catalogue", "Product")
 Category = get_model("catalogue", "Category")
@@ -63,15 +61,13 @@ def serialize_user(user):
     }
 
 
-
-
-
 def money(value):
     """Serialize Decimal-like values without floating point loss."""
 
     if value is None:
         return None
     return str(Decimal(value))
+
 
 def get_strategy(request):
     """Return Oscar's pricing/availability strategy for this request."""
@@ -80,6 +76,7 @@ def get_strategy(request):
         request=request,
         user=request.user,
     )
+
 
 def get_price_information(product, request):
     """
@@ -131,6 +128,7 @@ def get_price_information(product, request):
 
     return result
 
+
 def serialize_image(image):
     """Convert an Oscar product image to a small frontend DTO."""
 
@@ -149,10 +147,7 @@ def serialize_variant(product, request):
         for value in product.get_attribute_values()
     }
 
-    images = [
-        serialize_image(image)
-        for image in product.get_all_images()
-    ]
+    images = [serialize_image(image) for image in product.get_all_images()]
 
     return {
         "id": product.id,
@@ -176,10 +171,7 @@ def serialize_product(product, request):
         for category in product.categories.all()
     ]
 
-    images = [
-        serialize_image(image)
-        for image in product.get_all_images()
-    ]
+    images = [serialize_image(image) for image in product.get_all_images()]
 
     attributes = {
         value.attribute.code: value.value_as_text
@@ -217,8 +209,7 @@ def serialize_category(category):
     # Oscar stores the tree path on the category model, so this avoids
     # issuing a separate descendant traversal for every category.
     product_count = (
-        Product.objects
-        .filter(
+        Product.objects.filter(
             is_public=True,
             categories__path__startswith=category.path,
         )
@@ -276,7 +267,9 @@ def serialize_basket_line(line, request):
         "unit_price": money(unit_price),
         "line_total": money(line_total),
         "currency": purchase_info.price.currency,
-        "sku": purchase_info.stockrecord.partner_sku if purchase_info.stockrecord else None,
+        "sku": purchase_info.stockrecord.partner_sku
+        if purchase_info.stockrecord
+        else None,
         "image": product_image_url(product),
         "availability": {
             "available": purchase_info.availability.is_available_to_buy,
@@ -288,10 +281,7 @@ def serialize_basket_line(line, request):
 def serialize_basket(basket, request):
     """Return the current server-side Oscar basket."""
 
-    lines = [
-        serialize_basket_line(line, request)
-        for line in basket.all_lines()
-    ]
+    lines = [serialize_basket_line(line, request) for line in basket.all_lines()]
 
     if basket.is_tax_known:
         total = basket.total_incl_tax
@@ -531,8 +521,7 @@ class ProductListView(ListAPIView):
 
     def get_queryset(self):
         queryset = (
-            Product.objects
-            .filter(is_public=True)
+            Product.objects.filter(is_public=True)
             .exclude(structure=Product.CHILD)
             .prefetch_related(
                 "images",
@@ -549,8 +538,7 @@ class ProductListView(ListAPIView):
 
         if search:
             queryset = queryset.filter(
-                Q(title__icontains=search)
-                | Q(description__icontains=search)
+                Q(title__icontains=search) | Q(description__icontains=search)
             )
 
         if category:
@@ -591,17 +579,13 @@ class ProductDetailView(APIView):
 
     def get(self, request, slug):
         try:
-            product = (
-                Product.objects
-                .prefetch_related(
-                    "images",
-                    "children__images",
-                    "children__attribute_values__attribute",
-                    "attribute_values__attribute",
-                    "categories",
-                )
-                .get(slug=slug, is_public=True)
-            )
+            product = Product.objects.prefetch_related(
+                "images",
+                "children__images",
+                "children__attribute_values__attribute",
+                "attribute_values__attribute",
+                "categories",
+            ).get(slug=slug, is_public=True)
         except Product.DoesNotExist:
             return Response(
                 {"detail": "Product not found."},
@@ -622,11 +606,9 @@ class CategoryListView(APIView):
     authentication_classes = []
 
     def get(self, request):
-        categories = (
-            Category.objects
-            .filter(is_public=True, ancestors_are_public=True)
-            .order_by("path")
-        )
+        categories = Category.objects.filter(
+            is_public=True, ancestors_are_public=True
+        ).order_by("path")
         return Response([serialize_category(category) for category in categories])
 
 
@@ -635,11 +617,9 @@ class CountryListView(APIView):
     authentication_classes = []
 
     def get(self, request):
-        countries = (
-            Country.objects
-            .filter(printable_name__isnull=False, is_shipping_country=True)
-            .order_by("printable_name")
-        )
+        countries = Country.objects.filter(
+            printable_name__isnull=False, is_shipping_country=True
+        ).order_by("printable_name")
         return Response(
             [
                 {
@@ -747,7 +727,9 @@ class BasketLineView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        allowed, reason = line.purchase_info.availability.is_purchase_permitted(quantity)
+        allowed, reason = line.purchase_info.availability.is_purchase_permitted(
+            quantity
+        )
         if not allowed:
             return Response(
                 {"detail": reason},
@@ -796,7 +778,9 @@ class ShippingMethodListView(APIView):
                     "code": "free",
                     "name": "Standard shipping",
                     "description": "Standard delivery",
-                    "price": money(charge.incl_tax if charge.is_tax_known else charge.excl_tax),
+                    "price": money(
+                        charge.incl_tax if charge.is_tax_known else charge.excl_tax
+                    ),
                     "currency": charge.currency,
                 }
             ]
@@ -808,8 +792,7 @@ class OrderListView(APIView):
 
     def get(self, request):
         orders = (
-            Order.objects
-            .filter(user=request.user)
+            Order.objects.filter(user=request.user)
             .prefetch_related("lines", "shipping_address")
             .order_by("-date_placed")
         )
@@ -823,8 +806,7 @@ class OrderDetailView(APIView):
     def get(self, request, number):
         try:
             order = (
-                Order.objects
-                .filter(user=request.user)
+                Order.objects.filter(user=request.user)
                 .prefetch_related("lines", "shipping_address")
                 .get(number=number)
             )
@@ -871,9 +853,7 @@ class CreateOrderView(APIView):
         ]
 
         missing = [
-            field
-            for field in required_fields
-            if not str(data.get(field, "")).strip()
+            field for field in required_fields if not str(data.get(field, "")).strip()
         ]
 
         if missing:
@@ -1039,8 +1019,12 @@ class AddressListCreateView(APIView):
             postcode=str(data.get("postcode", "")).strip(),
             country=country,
             phone_number=str(data.get("phone_number", "")).strip(),
-            is_default_for_shipping=parse_bool(data.get("is_default_for_shipping"), False),
-            is_default_for_billing=parse_bool(data.get("is_default_for_billing"), False),
+            is_default_for_shipping=parse_bool(
+                data.get("is_default_for_shipping"), False
+            ),
+            is_default_for_billing=parse_bool(
+                data.get("is_default_for_billing"), False
+            ),
         )
 
         try:

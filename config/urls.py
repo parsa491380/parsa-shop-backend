@@ -26,13 +26,11 @@ urlpatterns = [
         "admin/",
         admin.site.urls,
     ),
-
     # Our API.
     path(
         "api/",
         include("api.urls"),
     ),
-
     # Oscar's dashboard and other Oscar URLs.
     #
     # We will mainly use the dashboard:
@@ -42,9 +40,7 @@ urlpatterns = [
     # for managing products, stock, orders, offers, etc.
     path(
         "",
-        include(
-            apps.get_app_config("oscar").urls[0]
-        ),
+        include(apps.get_app_config("oscar").urls[0]),
     ),
 ]
 

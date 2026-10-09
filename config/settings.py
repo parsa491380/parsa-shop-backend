@@ -31,6 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Environment helpers
 # ---------------------------------------------------------
 
+
 def env_bool(name: str, default: bool = False) -> bool:
     """
     Read a boolean environment variable.
@@ -67,11 +68,7 @@ def env_list(name: str, default: list[str] | None = None) -> list[str]:
     if not value:
         return default or []
 
-    return [
-        item.strip()
-        for item in value.split(",")
-        if item.strip()
-    ]
+    return [item.strip() for item in value.split(",") if item.strip()]
 
 
 # ---------------------------------------------------------
@@ -102,7 +99,6 @@ INSTALLED_APPS = [
     # -------------------------
     # Django
     # -------------------------
-
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -112,19 +108,14 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.flatpages",
     "django.contrib.sitemaps",
-
     # -------------------------
     # Our API
     # -------------------------
-
     "api",
-
     # -------------------------
     # Django Oscar
     # -------------------------
-
     "oscar.config.Shop",
-
     "oscar.apps.analytics.apps.AnalyticsConfig",
     "oscar.apps.checkout.apps.CheckoutConfig",
     "oscar.apps.address.apps.AddressConfig",
@@ -141,7 +132,6 @@ INSTALLED_APPS = [
     "oscar.apps.search.apps.SearchConfig",
     "oscar.apps.voucher.apps.VoucherConfig",
     "oscar.apps.wishlists.apps.WishlistsConfig",
-
     # Dashboard
     "oscar.apps.dashboard.apps.DashboardConfig",
     "oscar.apps.dashboard.reports.apps.ReportsDashboardConfig",
@@ -156,7 +146,6 @@ INSTALLED_APPS = [
     "oscar.apps.dashboard.vouchers.apps.VouchersDashboardConfig",
     "oscar.apps.dashboard.communications.apps.CommunicationsDashboardConfig",
     "oscar.apps.dashboard.shipping.apps.ShippingDashboardConfig",
-
     # Oscar dependencies
     "widget_tweaks",
     "haystack",
@@ -173,21 +162,15 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
     # Serve static assets efficiently.
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-
     # Protect POST/PUT/PATCH/DELETE requests.
     "django.middleware.csrf.CsrfViewMiddleware",
-
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-
     # Oscar requires this so request.basket exists.
     "oscar.apps.basket.middleware.BasketMiddleware",
 ]
@@ -207,13 +190,10 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-
         "DIRS": [
             BASE_DIR / "templates",
         ],
-
         "APP_DIRS": True,
-
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
@@ -221,7 +201,6 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.media",
                 "django.template.context_processors.static",
-
                 # Oscar context processors
                 "oscar.apps.search.context_processors.search_form",
                 "oscar.apps.checkout.context_processors.checkout",
@@ -251,7 +230,6 @@ DATABASE_ENGINE = os.getenv(
 )
 
 if DATABASE_ENGINE == "django.db.backends.postgresql":
-
     DATABASES = {
         "default": {
             "ENGINE": DATABASE_ENGINE,
@@ -264,7 +242,6 @@ if DATABASE_ENGINE == "django.db.backends.postgresql":
     }
 
 else:
-
     # SQLite is convenient for local development.
     #
     # IMPORTANT:
@@ -284,30 +261,20 @@ else:
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": (
-            "django.contrib.auth.password_validation."
-            "UserAttributeSimilarityValidator"
+            "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
         ),
     },
     {
-        "NAME": (
-            "django.contrib.auth.password_validation."
-            "MinimumLengthValidator"
-        ),
+        "NAME": ("django.contrib.auth.password_validation.MinimumLengthValidator"),
         "OPTIONS": {
             "min_length": 9,
         },
     },
     {
-        "NAME": (
-            "django.contrib.auth.password_validation."
-            "CommonPasswordValidator"
-        ),
+        "NAME": ("django.contrib.auth.password_validation.CommonPasswordValidator"),
     },
     {
-        "NAME": (
-            "django.contrib.auth.password_validation."
-            "NumericPasswordValidator"
-        ),
+        "NAME": ("django.contrib.auth.password_validation.NumericPasswordValidator"),
     },
 ]
 
@@ -417,9 +384,7 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-HAYSTACK_SIGNAL_PROCESSOR = (
-    "haystack.signals.RealtimeSignalProcessor"
-)
+HAYSTACK_SIGNAL_PROCESSOR = "haystack.signals.RealtimeSignalProcessor"
 
 
 # ---------------------------------------------------------
@@ -434,22 +399,16 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
     ],
-
     # Public API endpoints are explicitly protected with
     # IsAuthenticated where necessary.
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
-
     # Our frontend only needs JSON.
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
-
-    "DEFAULT_PAGINATION_CLASS": (
-        "rest_framework.pagination.PageNumberPagination"
-    ),
-
+    "DEFAULT_PAGINATION_CLASS": ("rest_framework.pagination.PageNumberPagination"),
     "PAGE_SIZE": 24,
 }
 
@@ -510,9 +469,7 @@ SECURE_SSL_REDIRECT = env_bool(
     False,
 )
 
-SECURE_HSTS_SECONDS = int(
-    os.getenv("DJANGO_HSTS_SECONDS", "0")
-)
+SECURE_HSTS_SECONDS = int(os.getenv("DJANGO_HSTS_SECONDS", "0"))
 
 # ---------------------------------------------------------
 # Checkout/payment safety
@@ -537,6 +494,4 @@ CHECKOUT_ALLOW_PENDING_ORDERS = env_bool(
 # Later we can replace this with your own SMTP setup.
 # ---------------------------------------------------------
 
-EMAIL_BACKEND = (
-    "django.core.mail.backends.console.EmailBackend"
-)
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
