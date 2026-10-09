@@ -12,6 +12,8 @@ venv:
 # Install backend dependencies.
 install:
   python -m pip install -r requirements.txt
+install-dev:
+  python -m pip install -r requirements-dev.txt
 
 
 # Populate Oscar shipping countries used by checkout.
