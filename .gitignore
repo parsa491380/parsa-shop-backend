@@ -19,3 +19,6 @@ __pycache__/
 
 # ruff
 .ruff_cache
+
+# Local search index (regenerated automatically)
+whoosh_index/
