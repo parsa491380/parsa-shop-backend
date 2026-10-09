@@ -1,28 +1,43 @@
+# Start Django development server.
 # start the server : on port : http://127.0.0.1:8000/
 #  django admin panel after running the server : http://127.0.0.1:8000/admin/
-dev: 
+dev:
   python manage.py runserver
 
+# Create the local Python virtual environment.
 # activate the virtual environment ( venv ) :
-venv: 
+venv:
   venv/Scripts/activate
 
-# apply changes from the models in the database :
-makeMigrations: 
-  python manage.py makemigrations
+# Install backend dependencies.
+install:
+  python -m pip install -r requirements.txt
+
+
+# Populate Oscar shipping countries used by checkout.
+bootstrap:
+  python manage.py bootstrap_store
 
 # create the super user account :
-createUser: 
+# Create the store administrator.
+createUser:
   python manage.py createsuperuser
 
-#
-migrate: 
+# Run Django system checks.
+check:
+  python manage.py check
+
+# Apply database migrations.
+migrate:
   python manage.py migrate
 
 # format the project
+# Format Python files.
 format:
   ruff format .
 
 # lint the project
-lint: 
+# and fix
+# Run Ruff checks.
+lint:
   ruff check . --fix
