@@ -318,7 +318,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Europe/Amsterdam"
+TIME_ZONE = os.getenv("DJANGO_TIME_ZONE", "UTC")
 
 USE_I18N = True
 USE_TZ = True
@@ -385,6 +385,23 @@ OSCAR_ALLOW_ANON_CHECKOUT = True
 # Number of products stored in the recently viewed cookie.
 OSCAR_RECENTLY_VIEWED_PRODUCTS = 20
 
+# Order workflow used by the store. The dashboard can move an order
+# through these states as fulfilment progresses.
+OSCAR_INITIAL_ORDER_STATUS = "Pending"
+OSCAR_INITIAL_LINE_STATUS = "Pending"
+OSCAR_ORDER_STATUS_PIPELINE = {
+    "Pending": ("Being processed", "Cancelled"),
+    "Being processed": ("Processed", "Cancelled"),
+    "Processed": ("Shipped", "Cancelled"),
+    "Shipped": ("Delivered",),
+    "Delivered": (),
+    "Cancelled": (),
+}
+
+# Used when a new stock record is created in Oscar's dashboard.
+# Existing stock records retain their own configured currency.
+OSCAR_DEFAULT_CURRENCY = os.getenv("OSCAR_DEFAULT_CURRENCY", "ریال")
+
 
 # ---------------------------------------------------------
 # Search
@@ -445,6 +462,7 @@ CSRF_TRUSTED_ORIGINS = env_list(
     "DJANGO_CSRF_TRUSTED_ORIGINS",
     [
         "http://localhost:3000",
+        "http://127.0.0.1:3000",
     ],
 )
 
@@ -494,6 +512,19 @@ SECURE_SSL_REDIRECT = env_bool(
 
 SECURE_HSTS_SECONDS = int(
     os.getenv("DJANGO_HSTS_SECONDS", "0")
+)
+
+# ---------------------------------------------------------
+# Checkout/payment safety
+#
+# Pending orders are useful while developing locally, but a
+# production store must not consider an order paid until the
+# payment provider has confirmed the transaction.
+# ---------------------------------------------------------
+
+CHECKOUT_ALLOW_PENDING_ORDERS = env_bool(
+    "CHECKOUT_ALLOW_PENDING_ORDERS",
+    DEBUG,
 )
 
 
