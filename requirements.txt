@@ -1,32 +1,15 @@
-# ---------------------------------------------------------
-# Core framework
-# ---------------------------------------------------------
-
 Django==5.2.17
-
-# Django Oscar ecommerce framework
 django-oscar==4.2
-
-# REST API framework
 djangorestframework
-
-# PostgreSQL database driver
 psycopg[binary]
-
-# Product/image handling
 Pillow
-
-# Production application server
 gunicorn
-
-# Serve Django static files
 whitenoise
-
-# sorl & thumbnails 
 sorl-thumbnail
 easy-thumbnails
-
-# Local search engine used by Oscar.
-# This runs locally on our server; it is not an external service.
 django-haystack
 Whoosh
+django-widget-tweaks
+django-treebeard
+django-tables2
+pycountry
