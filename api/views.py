@@ -486,7 +486,11 @@ class RegisterView(APIView):
 
         user.set_password(password)
         user.save()
-        login(request, user)
+        login(
+            request,
+            user,
+            backend="django.contrib.auth.backends.ModelBackend",
+        )
 
         return Response(
             {"user": serialize_user(user)},
